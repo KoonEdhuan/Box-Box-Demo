@@ -70,7 +70,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -349,6 +351,7 @@ fun MiddleSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RaceInfoCard(
     modifier: Modifier = Modifier,
@@ -393,10 +396,22 @@ fun RaceInfoCard(
 
                     Spacer(Modifier.width(4.dp))
 
-                    Text(upcomingSessionDate ?: "", color = White)
+                    Text(
+                        upcomingSessionDate ?: "",
+                        color = White,
+                        fontFamily = FontFamily.SansSerif,
+                        style = MaterialTheme.typography.titleMediumEmphasized,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
-                Text(upcomingSessionStartTime ?: "", color = Color(0xFF66BB6A), fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    upcomingSessionStartTime ?: "",
+                    color = Color(0xFF66BB6A),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif,
+                )
             }
         }
     }
@@ -409,15 +424,35 @@ fun DistanceCard() {
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Red)
     ) {
-        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(Icons.Default.Route, contentDescription = "Distance", tint = White)
             Spacer(Modifier.width(8.dp))
-            Text("7015.3", color = White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text("km", color = White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    "7015.3",
+                    color = White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+
+                Spacer(Modifier.width(4.dp))
+
+                Text(
+                    "km",
+                    color = White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EducationCard(
     onEducationClick: () -> Unit
@@ -446,12 +481,14 @@ fun EducationCard(
                         "Formula 1",
                         color = White,
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.titleSmallEmphasized
                     )
                     Text(
                         "Education",
-                        color = White.copy(alpha = 0.7f),
-                        style = MaterialTheme.typography.bodyMedium
+                        color = White,
+                        style = MaterialTheme.typography.bodyLargeEmphasized,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -495,6 +532,7 @@ fun F1GameCard(
                         .align(Alignment.TopCenter),
                     color = White,
                     fontSize = 40.sp,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold
                 )
                 Icon(

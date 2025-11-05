@@ -1,5 +1,6 @@
 package com.example.boxboxdemo.ui.viewmodel
 
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -148,30 +150,6 @@ class MyViewModel @Inject constructor(
 
          val sdfTime = SimpleDateFormat("hh:mm a")
          sdfTime.timeZone = TimeZone.getDefault()
-        _upcomingSessionStartTime.postValue(sdfTime.format(date))
-
-        //startCountdown(raceTime * 1000)
+        _upcomingSessionStartTime.postValue(sdfTime.format(date).uppercase(Locale.ROOT))
     }
-
-//    fun startCountdown(endTimeMillis: Long) {
-//        _isCountdownActive.postValue(true)
-//        viewModelScope.launch {
-//            while (_isCountdownActive.value == true) {
-//                val currentTime = System.currentTimeMillis()
-//                val diff = endTimeMillis - currentTime
-//
-//                if (diff <= 0) {
-//                    _countdown.postValue(RaceCountdown(0, 0, 0))
-//                    _isCountdownActive.postValue(false)
-//                    break
-//                }
-//
-//                val days = TimeUnit.MILLISECONDS.toDays(diff)
-//                val hours = TimeUnit.MILLISECONDS.toHours(diff) % 24
-//                val minutes = TimeUnit.MILLISECONDS.toMinutes(diff) % 60
-//                _countdown.postValue(RaceCountdown(days, hours, minutes))
-//                delay(60000)
-//            }
-//        }
-//    }
 }
