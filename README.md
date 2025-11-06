@@ -1,4 +1,4 @@
-# BoxBoxDemo F1 Application
+# Box Box Demo F1 Application
 
 A demo Android application built with Jetpack Compose that displays Formula 1 race information, ranking.
 
