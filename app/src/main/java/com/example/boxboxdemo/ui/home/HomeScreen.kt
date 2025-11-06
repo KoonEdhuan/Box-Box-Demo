@@ -1,6 +1,5 @@
 package com.example.boxboxdemo.ui.home
 
-import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
@@ -26,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.CalendarToday
@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.School
@@ -44,6 +43,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.LoadingIndicatorDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -72,13 +73,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.boxboxdemo.R
 import com.example.boxboxdemo.data.model.BottomNavItem
 import com.example.boxboxdemo.data.model.Driver
@@ -86,9 +84,10 @@ import com.example.boxboxdemo.data.model.Session
 import com.example.boxboxdemo.ui.viewmodel.MyViewModel
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
+    onNavigateToDetails: () -> Unit
 ) {
     val viewModel: MyViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -99,43 +98,61 @@ fun HomeScreen(
     val upcomingSession by viewModel.upcomingSession.observeAsState()
     val upcomingSessionStartTime by viewModel.upcomingSessionStartTime.observeAsState()
     val upcomingSessionDate by viewModel.upcomingSessionDate.observeAsState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
 
+    val scaffoldColor = if (pagerState.currentPage == 0) {
+        Color(0xFFF97700)
+    } else {
+        Black
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getDriversRanking()
+    }
 
     Scaffold(
+        containerColor = scaffoldColor,
         bottomBar = { BottomNavigationBar() }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Black)
-                .verticalScroll(rememberScrollState())
-        ) {
-            TopSection(topRankDriver)
+        Box(modifier = Modifier.padding(innerPadding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Black)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                TopSection(topRankDriver, pagerState)
 
-            MiddleSection(
-                onRaceClick = {
-                    navController.navigate("details_screen")
-                },
-                onEducationClick = {
-                    val url = "https://blog.boxbox.club/tagged/beginners-guide"
-                    customTabsIntent.launchUrl(context, Uri.parse(url))
-                },
-                onF1CardClick = {
-                    val url = "https://www.instagram.com/boxbox_club/"
-                    customTabsIntent.launchUrl(context, Uri.parse(url))
-                },
-                upcomingSession = upcomingSession,
-                upcomingSessionStartTime = upcomingSessionStartTime,
-                upcomingSessionDate = upcomingSessionDate
-            )
+                MiddleSection(
+                    onRaceClick = {
+                        onNavigateToDetails()
+                    },
+                    onEducationClick = {
+                        val url = "https://blog.boxbox.club/tagged/beginners-guide"
+                        customTabsIntent.launchUrl(context, url.toUri())
+                    },
+                    onF1CardClick = {
+                        val url = "https://www.instagram.com/boxbox_club/"
+                        customTabsIntent.launchUrl(context, url.toUri())
+                    },
+                    upcomingSession = upcomingSession,
+                    upcomingSessionStartTime = upcomingSessionStartTime,
+                    upcomingSessionDate = upcomingSessionDate
+                )
+            }
+            if (isLoading == true) {
+                LoadingIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.Blue,
+                    polygons = LoadingIndicatorDefaults.IndeterminateIndicatorPolygons
+                )
+            }
         }
     }
 }
 
 @Composable
-fun TopSection(topRankDriver: Driver?) {
-    val pagerState = rememberPagerState(pageCount = { 2})
+fun TopSection(topRankDriver: Driver?, pagerState: androidx.compose.foundation.pager.PagerState) {
 
     LaunchedEffect(Unit) {
         while(true) {
@@ -244,7 +261,7 @@ fun DriverInfo(info: Driver?) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                Icons.Default.TrendingUp,
+                Icons.AutoMirrored.Filled.TrendingUp,
                 contentDescription = "Position",
                 tint = Yellow
             )
@@ -255,7 +272,7 @@ fun DriverInfo(info: Driver?) {
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(Modifier.width(4.dp))
+            Spacer(Modifier.width(2.dp))
 
             Text(
                 "Pos",
@@ -278,7 +295,7 @@ fun DriverInfo(info: Driver?) {
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(Modifier.width(4.dp))
+            Spacer(Modifier.width(2.dp))
 
             Text(
                 "Wins",
@@ -299,7 +316,7 @@ fun DriverInfo(info: Driver?) {
                     fontWeight = FontWeight.Light
                 )
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(2.dp))
             Card(
                 shape = RoundedCornerShape(8.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF97700)),
@@ -652,8 +669,9 @@ fun CommunityCard() {
     }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(rememberNavController())
+    HomeScreen(onNavigateToDetails = {})
 }

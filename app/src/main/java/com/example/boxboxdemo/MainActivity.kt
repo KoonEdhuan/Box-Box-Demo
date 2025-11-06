@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.boxboxdemo.ui.navigation.NavHost
+import com.example.boxboxdemo.ui.navigation.AppNavHost
 import com.example.boxboxdemo.ui.theme.BoxBoxDemoTheme
 import com.example.boxboxdemo.ui.viewmodel.MyViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,9 +19,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val viewModel: MyViewModel = hiltViewModel()
-
             BoxBoxDemoTheme {
-                NavHost(navController = navController, viewModel = viewModel)
+                AppNavHost(navController = navController)
             }
         }
     }

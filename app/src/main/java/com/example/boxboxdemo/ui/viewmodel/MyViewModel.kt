@@ -1,7 +1,7 @@
 package com.example.boxboxdemo.ui.viewmodel
 
-import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.boxboxdemo.data.model.Driver
@@ -9,40 +9,21 @@ import com.example.boxboxdemo.data.model.Schedule
 import com.example.boxboxdemo.data.model.Session
 import com.example.boxboxdemo.data.repository.MyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-/**
- * A simple data class to hold the remaining time for a race countdown.
- *
- * @property days The number of remaining days.
- * @property hours The number of remaining hours.
- * @property minutes The number of remaining minutes.
- */
-data class RaceCountdown(val days: Long, val hours: Long, val minutes: Long)
 
 @HiltViewModel
 class MyViewModel @Inject constructor(
     private val repository: MyRepository
 ) : ViewModel() {
 
-    init {
-        getDriversRanking()
-        getRacesInfo()
-    }
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _topRankDriver = MutableLiveData<Driver>()
-    val topRankDriver: LiveData<Driver> = _topRankDriver
+    private val _topRankDriver = MutableLiveData<Driver?>()
+    val topRankDriver: LiveData<Driver?> = _topRankDriver
 
     private val _nextUpcomingRace = MutableLiveData<Schedule>()
     val nextUpcomingRace: LiveData<Schedule> = _nextUpcomingRace
@@ -59,29 +40,29 @@ class MyViewModel @Inject constructor(
     private val _upcomingSessionStartTime = MutableLiveData<String>()
     val upcomingSessionStartTime: LiveData<String> = _upcomingSessionStartTime
 
-    private val _countdown = MutableLiveData(RaceCountdown(0,0,0))
-    val countdown: LiveData<RaceCountdown> = _countdown
-
-    private val _isCountdownActive = MutableLiveData(false)
-    val isCountdownActive: LiveData<Boolean> = _isCountdownActive
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun getDriversRanking() {
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val drivers = repository.getDriversRanking()
                 _topRankDriver.postValue( drivers.drivers.find {
                     it.position.toInt() == 1
                 })
-                _isLoading.postValue(false)
+                getRacesInfo()
             } catch (e: Exception) {
-                _isLoading.postValue(false)
                 e.printStackTrace()
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }
 
     fun getRacesInfo() {
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val raceInfo = repository.getRacesInfo()
                 val upcomingRace = findNextUpcomingRace(raceInfo.schedule)
@@ -99,10 +80,10 @@ class MyViewModel @Inject constructor(
                         calculateRaceTime(it.startTime)
                     }
                 }
-                _isLoading.postValue(false)
             } catch (e: Exception) {
-                _isLoading.postValue(false)
                 e.printStackTrace()
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }
