@@ -20,7 +20,9 @@ To build and run this project, follow these steps:
    **Clone the repository:**
     Use the following command to clone the project to your local machine:
     git clone https://github.com/KoonEdhuan/Box-Box-Demo.git
+    
     Open the project in Android Studio. Build the project and launch the application 
+    
     with an emulator or personal device.
    
 
