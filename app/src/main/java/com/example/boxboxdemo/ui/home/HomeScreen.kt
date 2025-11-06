@@ -25,9 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
-import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.EmojiEvents
@@ -261,9 +259,10 @@ fun DriverInfo(info: Driver?) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                Icons.AutoMirrored.Filled.TrendingUp,
+                painterResource(id = R.drawable.graph),
                 contentDescription = "Position",
-                tint = Yellow
+                tint = Yellow,
+                modifier = Modifier.size(16.dp)
             )
 
             Text(
@@ -284,10 +283,13 @@ fun DriverInfo(info: Driver?) {
             Spacer(Modifier.width(16.dp))
 
             Icon(
-                Icons.Default.AddCircleOutline,
-                contentDescription = "Wins",
-                tint = Yellow
+                painterResource(id = R.drawable.bullseye),
+                contentDescription = "Position",
+                tint = Yellow,
+                modifier = Modifier.size(16.dp)
             )
+
+            Spacer(Modifier.width(2.dp))
 
             Text(
                 info?.wins.toString(),
@@ -556,7 +558,10 @@ fun F1GameCard(
                     painter = painterResource(id = R.drawable.instagram),
                     contentDescription = "Instagram",
                     tint = White,
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp).size(32.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                        .size(32.dp)
                 )
             }
         }
