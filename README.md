@@ -8,7 +8,9 @@ Here is a preview of the application's home screen:
 
 ![BoxBoxDemo Screenshot](<home_screen_1.jpg>)
 
+
 Here is a preview of the application's detail screen:
+
 ![BoxBoxDemo Screenshot](<detail_screen.jpg>)
 
 ## 🚀 Setup and Installation
