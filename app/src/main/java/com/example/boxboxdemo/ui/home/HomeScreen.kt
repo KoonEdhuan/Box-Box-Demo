@@ -121,20 +121,10 @@ fun HomeScreen(
                     .background(Black)
                     .verticalScroll(rememberScrollState())
             ) {
-                //TopSection(topRankDriver, pagerState)
 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color(0xFFFF5A08),
-                                    Color(0xFFFF5A08),
-                                    Black
-                                )
-                            )
-                        )
                 ) {
                     HorizontalPager(state = pagerState) { page ->
                         when (page) {
@@ -221,6 +211,15 @@ fun DriverInfo(info: Driver?) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFF5A08),
+                        Color(0xFFFF5A08),
+                        Black
+                    )
+                )
+            )
             .height(400.dp)
     ) {
 
