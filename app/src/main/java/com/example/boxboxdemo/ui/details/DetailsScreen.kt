@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
@@ -150,7 +151,7 @@ fun DetailsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column {
-                                Text(text = circuitName, color = LightGreen)
+                                Text(text = circuitName, color = Color(0xFF009B3A))
 
                                 Text(text = upcomingRaceDateRange ?: "", color = White)
 
@@ -221,7 +222,12 @@ fun DetailsScreen(
 @Composable
 fun CountdownUnit(time: String, unit: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = time, color = LightGreen, fontSize = 36.sp, fontWeight = FontWeight.Normal)
+        Text(
+            text = time,
+            color = Color(0xFF009B3A),
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Normal
+        )
         Text(text = unit, color = White)
     }
 }

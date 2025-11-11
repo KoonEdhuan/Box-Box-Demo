@@ -94,7 +94,7 @@ fun HomeScreen(
     val pagerState = rememberPagerState(pageCount = { 2 })
 
     val scaffoldColor = if (pagerState.currentPage == 0) {
-        Color(0xFFF97700)
+        Color(0xFFFF5A08)
     } else {
         Black
     }
@@ -129,8 +129,8 @@ fun HomeScreen(
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFFF97700),
-                                    Color(0xFFF97700),
+                                    Color(0xFFFF5A08),
+                                    Color(0xFFFF5A08),
                                     Black
                                 )
                             )
@@ -303,7 +303,7 @@ fun DriverInfo(info: Driver?) {
                     text = info?.points.toString(),
                     style = TextStyle(
                         brush = Brush.verticalGradient(
-                            colors = listOf(White, Color(0xFFF97700))
+                            colors = listOf(White, Color(0xFFFF5A08))
                         ),
                         fontSize = 80.sp,
                         fontWeight = FontWeight.Light
@@ -312,7 +312,7 @@ fun DriverInfo(info: Driver?) {
                 Spacer(Modifier.width(2.dp))
                 Card(
                     shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF97700)),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFF5A08)),
                     modifier = Modifier.padding(bottom = 16.dp)
                 ) {
                     Text(
@@ -384,7 +384,7 @@ fun RaceInfoCard(
                 onClick = { onRaceClick() }
             ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF2C5A3A))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF044331))
     ) {
         Column(modifier = Modifier
             .padding(16.dp)
@@ -493,7 +493,7 @@ fun EducationCard(
             )
             .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Blue)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF3020FD))
     ) {
         Box(modifier = Modifier
             .fillMaxWidth()
