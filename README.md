@@ -1,3 +1,4 @@
+
 # Box Box Demo F1 Application
 
 A demo Android application built with Jetpack Compose that displays Formula 1 race information, ranking.
@@ -6,12 +7,12 @@ A demo Android application built with Jetpack Compose that displays Formula 1 ra
 
 Here is a preview of the application's home screen:
 
-![BoxBoxDemo Screenshot](<home_screen_1.jpg>)
+![BoxBoxDemo Screenshot](<homeScreen_1.jpg>)
 
 
 Here is a preview of the application's detail screen:
 
-![BoxBoxDemo Screenshot](<detail_screen.jpg>)
+![BoxBoxDemo Screenshot](<detailsScreen.jpg>)
 
 ## 🚀 Setup:
 
@@ -24,7 +25,7 @@ To build and run this project, follow these steps:
     with an emulator or personal device.
    
 
-## 🚀 Installation Instructions:
+## 🚀 APK Installation Instructions:
 
 Download the [app-debug.apk](<app-debug.apk>) file onto your Android device.
 
