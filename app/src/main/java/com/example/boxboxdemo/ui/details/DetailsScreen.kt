@@ -1,6 +1,7 @@
 package com.example.boxboxdemo.ui.details
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.LoadingIndicatorDefaults
@@ -29,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.boxboxdemo.R
 import com.example.boxboxdemo.data.model.RaceCountdown
 import com.example.boxboxdemo.ui.theme.DarkGreen
 import com.example.boxboxdemo.ui.theme.LightGreen
@@ -90,6 +94,7 @@ fun DetailsScreen(
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -110,19 +115,26 @@ fun DetailsScreen(
                     fontFamily = FontFamily.SansSerif
                 )
                 Spacer(modifier = Modifier.height(32.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(text = "Round ${upcomingRace?.round}", color = White)
+
+                        Text(
+                            text = "Round ${upcomingRace?.round}",
+                            color = White
+                        )
+
                         Text(
                             text = upcomingRace?.raceName ?: "",
                             color = White,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold
                         )
+
                         val circuitId = upcomingRace?.circuitId ?: ""
                         val circuitName = circuitId
                             .replace("_", " ")
@@ -131,31 +143,55 @@ fun DetailsScreen(
                             {
                                 it.replaceFirstChar(Char::titlecase)
                             }.trim()
-                        Text(text = circuitName, color = LightGreen)
-                        Text(text = upcomingRaceDateRange ?: "", color = White)
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column {
+                                Text(text = circuitName, color = LightGreen)
+
+                                Text(text = upcomingRaceDateRange ?: "", color = White)
+
+                                Spacer(modifier = Modifier.height(32.dp))
+
+                                Text(
+                                    text = "${upcomingSession?.sessionName} Starts in",
+                                    color = White
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    CountdownUnit(
+                                        time = countdown?.days?.toString()?.padStart(2, '0')
+                                            ?: "00", unit = "Days"
+                                    )
+                                    CountdownUnit(
+                                        time = countdown?.hours?.toString()?.padStart(2, '0')
+                                            ?: "00", unit = "Hours"
+                                    )
+                                    CountdownUnit(
+                                        time = countdown?.minutes?.toString()?.padStart(2, '0')
+                                            ?: "00", unit = "Minutes"
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(32.dp))
+                            }
+
+                            Image(
+                                painter = painterResource(id = R.drawable.circuit_3d),
+                                contentDescription = "Circuit map",
+                                modifier = Modifier
+                                    .size(160.dp)
+                            )
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "${upcomingSession?.sessionName} Starts in", color = White)
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        CountdownUnit(time = countdown?.days?.toString()?.padStart(2, '0') ?: "00", unit = "Days")
-                        CountdownUnit(time = countdown?.hours?.toString()?.padStart(2, '0') ?: "00", unit = "Hours")
-                        CountdownUnit(time = countdown?.minutes?.toString()?.padStart(2, '0') ?: "00", unit = "Minutes")
-                    }
-
-
-                    Spacer(modifier = Modifier.height(32.dp))
                 }
 
                 InfoSection(

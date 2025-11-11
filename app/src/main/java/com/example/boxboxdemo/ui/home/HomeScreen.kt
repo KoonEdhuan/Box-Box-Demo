@@ -25,16 +25,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Route
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -104,6 +99,13 @@ fun HomeScreen(
         Black
     }
 
+    LaunchedEffect(key1 = pagerState) {
+        while (true) {
+            delay(3000)
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
+        }
+    }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.getDriversRanking()
     }
@@ -119,7 +121,50 @@ fun HomeScreen(
                     .background(Black)
                     .verticalScroll(rememberScrollState())
             ) {
-                TopSection(topRankDriver, pagerState)
+                //TopSection(topRankDriver, pagerState)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFFF97700),
+                                    Color(0xFFF97700),
+                                    Black
+                                )
+                            )
+                        )
+                ) {
+                    HorizontalPager(state = pagerState) { page ->
+                        when (page) {
+                            0 -> DriverInfo(topRankDriver)
+                            1 -> CommunityCard()
+                        }
+                    }
+                    GetProButton()
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(vertical = 8.dp), horizontalArrangement = Arrangement.Center
+                )
+                {
+                    repeat(2) { iteration ->
+                        val color = if (pagerState.currentPage == iteration) White else Gray
+                        val width by animateDpAsState(targetValue = if (pagerState.currentPage == iteration) 32.dp else 6.dp)
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .width(width)
+                                .clip(CircleShape)
+                                .background(color)
+                                .size(6.dp)
+                        )
+                    }
+                }
 
                 MiddleSection(
                     onRaceClick = {
@@ -150,83 +195,6 @@ fun HomeScreen(
 }
 
 @Composable
-fun TopSection(topRankDriver: Driver?, pagerState: androidx.compose.foundation.pager.PagerState) {
-
-    LaunchedEffect(Unit) {
-        while(true) {
-            delay(3000)
-            pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
-        }
-    }
-
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(450.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color(0xFFF97700),
-                                    Color(0xFFF97700),
-                                    Black
-                                )
-                            )
-                        )
-                ) {
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        if (pagerState.currentPage == 0) {
-
-                            DriverInfo(topRankDriver)
-                        } else {
-                            CommunityCard()
-                        }
-                    }
-                }
-            }
-
-            GetProButton()
-        }
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(bottom = 8.dp)
-            ,horizontalArrangement = Arrangement.Center)
-        {
-            repeat(2) { iteration ->
-                val color = if (pagerState.currentPage == iteration) White else Gray
-                val width by animateDpAsState(targetValue = if (pagerState.currentPage == iteration) 32.dp else 6.dp)
-                Box(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .width(width)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(6.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun GetProButton() {
     Button(
         modifier = Modifier
@@ -235,7 +203,12 @@ fun GetProButton() {
         colors = ButtonDefaults.buttonColors(containerColor = White.copy(alpha = 0.2f)),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Icon(Icons.Default.Diamond, contentDescription = "Get Pro", tint = White)
+        //Icon(Icons.Default.Diamond, contentDescription = "Get Pro", tint = White)
+        Icon(
+            painterResource(id = R.drawable.pro_icon),
+            contentDescription = "Track",
+            modifier = Modifier.size(24.dp)
+        )
         Spacer(Modifier.width(8.dp))
         Text("Get Pro", color = White)
     }
@@ -244,87 +217,111 @@ fun GetProButton() {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DriverInfo(info: Driver?) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(0.dp)
+            .fillMaxSize()
+            .height(400.dp)
     ) {
-        Text(
-            info?.firstName.toString(),
-            fontSize = 80.sp,
-            color = White.copy(alpha = 0.5f),
-            fontWeight = FontWeight.Bold
+
+        Image(
+            painter = painterResource(id = R.drawable.lando_norris),
+            contentDescription = "Driver image",
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .background(Color.Transparent)
+                .width(300.dp)
+                .height(350.dp),
+            contentScale = ContentScale.FillBounds
         )
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painterResource(id = R.drawable.graph),
-                contentDescription = "Position",
-                tint = Yellow,
-                modifier = Modifier.size(16.dp)
-            )
-
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp)
+        ) {
             Text(
-                text = info?.position.toString(),
-                fontSize = 24.sp, color = White,
+                info?.firstName.toString(),
+                fontSize = 80.sp,
+                color = White.copy(alpha = 0.5f),
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(Modifier.width(2.dp))
-
-            Text(
-                "Pos",
-                fontSize = 14.sp,
-                color = White,
-                style = MaterialTheme.typography.labelSmallEmphasized
-            )
-
-            Spacer(Modifier.width(16.dp))
-
-            Icon(
-                painterResource(id = R.drawable.bullseye),
-                contentDescription = "Position",
-                tint = Yellow,
-                modifier = Modifier.size(16.dp)
-            )
-
-            Spacer(Modifier.width(2.dp))
-
-            Text(
-                info?.wins.toString(),
-                fontSize = 24.sp, color = White,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(Modifier.width(2.dp))
-
-            Text(
-                "Wins",
-                fontSize = 14.sp,
-                color = White,
-                style = MaterialTheme.typography.labelSmallEmphasized
-            )
-        }
-
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
-                text = info?.points.toString(),
-                style = TextStyle(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(White,Color(0xFFF97700))
-                    ),
-                    fontSize = 80.sp,
-                    fontWeight = FontWeight.Light
-                )
-            )
-            Spacer(Modifier.width(2.dp))
-            Card(
-                shape = RoundedCornerShape(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF97700)),
-                modifier = Modifier.padding(bottom = 16.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("PTS", modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), color = White, fontWeight = FontWeight.Bold)
+                Icon(
+                    painterResource(id = R.drawable.graph),
+                    contentDescription = "Position",
+                    tint = Yellow,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Text(
+                    text = info?.position.toString(),
+                    fontSize = 24.sp, color = White,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.width(2.dp))
+
+                Text(
+                    "Pos",
+                    fontSize = 14.sp,
+                    color = White,
+                    style = MaterialTheme.typography.labelSmallEmphasized
+                )
+
+                Spacer(Modifier.width(16.dp))
+
+                Icon(
+                    painterResource(id = R.drawable.bullseye),
+                    contentDescription = "Position",
+                    tint = Yellow,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Spacer(Modifier.width(2.dp))
+
+                Text(
+                    info?.wins.toString(),
+                    fontSize = 24.sp, color = White,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.width(2.dp))
+
+                Text(
+                    "Wins",
+                    fontSize = 14.sp,
+                    color = White,
+                    style = MaterialTheme.typography.labelSmallEmphasized
+                )
+            }
+
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    text = info?.points.toString(),
+                    style = TextStyle(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(White, Color(0xFFF97700))
+                        ),
+                        fontSize = 80.sp,
+                        fontWeight = FontWeight.Light
+                    )
+                )
+                Spacer(Modifier.width(2.dp))
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF97700)),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Text(
+                        "PTS",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        color = White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -399,7 +396,12 @@ fun RaceInfoCard(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.Top
             ) {
-                Icon(Icons.Default.Map, contentDescription = "Track", tint = White, modifier = Modifier.size(24.dp))
+                Icon(
+                    painterResource(id = R.drawable.circuit),
+                    contentDescription = "Track",
+                    tint = White,
+                    modifier = Modifier.size(42.dp)
+                )
             }
 
             Column {
@@ -448,8 +450,15 @@ fun DistanceCard() {
             .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.Route, contentDescription = "Distance", tint = White)
+            Icon(
+                painterResource(id = R.drawable.distance_icon),
+                contentDescription = "Track",
+                tint = White,
+                modifier = Modifier.size(36.dp)
+            )
+
             Spacer(Modifier.width(8.dp))
+
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
                     "7015.3",
@@ -493,8 +502,15 @@ fun EducationCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.School, contentDescription = "Education", tint = White)
+                Icon(
+                    painterResource(id = R.drawable.medium),
+                    contentDescription = "Track",
+                    tint = White,
+                    modifier = Modifier.size(36.dp)
+                )
+
                 Spacer(Modifier.width(8.dp))
+
                 Column {
                     Text(
                         "Formula 1",
@@ -511,11 +527,14 @@ fun EducationCard(
                     )
                 }
             }
+
             Icon(
-                imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
+                painterResource(id = R.drawable.external),
                 contentDescription = "External URL",
                 tint = White,
-                modifier = Modifier.align(Alignment.TopEnd)
+                modifier = Modifier
+                    .size(18.dp)
+                    .align(Alignment.TopEnd)
             )
         }
     }
@@ -527,44 +546,15 @@ fun F1GameCard(
 ) {
     Box {
         Image(
-            painter = painterResource(id = R.drawable.lewis_hamilton_img),
+            painter = painterResource(id = R.drawable.instagram_lewis),
             contentDescription = "F1 25 Background",
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable(enabled = true, onClick = onF1CardClick)
                 .height(400.dp)
                 .clip(RoundedCornerShape(16.dp)),
             contentScale = ContentScale.Crop
         )
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(enabled = true, onClick = onF1CardClick)
-                .height(400.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(
-                    "F1 25",
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.TopCenter),
-                    color = White,
-                    fontSize = 40.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.instagram),
-                    contentDescription = "Instagram",
-                    tint = White,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp)
-                        .size(32.dp)
-                )
-            }
-        }
     }
 }
 
@@ -614,45 +604,11 @@ fun CommunityCard() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        "WE ARE",
-                        color = Color.LightGray,
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        "MORE THAN",
-                        color = Color(0xFF4A90E2),
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        "JUST AN APP",
-                        color = Black,
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .background(
-                                Color(0xFFAFFF7A),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .padding(horizontal = 16.dp)
-                    )
-                }
-            }
 
-            Spacer(Modifier.height(24.dp))
-
-            Text(
-                "JOIN OUR F1 COMMUNITY",
-                color = White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+            Image(
+                painterResource(R.drawable.community),
+                contentDescription = "Community",
+                modifier = Modifier.size(300.dp)
             )
 
             Spacer(Modifier.height(32.dp))
